@@ -16,5 +16,10 @@ public class User extends BaseModel {
     private String hashedPassword;
     @ManyToMany
     private List<Role> roles;
+    /*
+    allow multiple login:
+    login from phone -> one token
+    and login from laptop -> another token (shouldn't get logged out from phone)
+     */
     private boolean isEmailVerified;
 }
