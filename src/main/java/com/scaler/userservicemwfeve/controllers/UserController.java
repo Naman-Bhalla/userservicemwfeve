@@ -9,22 +9,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
     public User login() {
-        // check if email and password in db
-        // if yes return user
-        // else throw some error
-        return null;
+        res=True
+        String email=userRepo.getUserByID(id);
+        if (email==None){
+            throw new Exception;
+        }
+
+        String passWord=userRepo.getPasswordById(id);
+        if (passWord==None OR passWord==actualPassword){
+            throw new Exception;
+        }
+
+        ResponseEntity<Boolean> response= new Response();
+        response.set(Response.200);
+        return response;
+
+
+
     }
 
     public User signUp() {
-        // no need to hash password for now
-        // just store user as is in the db
-        // for now no need to have email verification either
-        return null;
+        User user=userRepo.getUserByEmail(email);
+        if(user!=None){
+            throw new Exception;
+        }
+        User user=unew User();
+        user.setName(name);
+        user.setEmail(email);
+        user.password(password);
+        User user=userRepo.save(user);
+        return new ResponseEntity(Response.200)
     }
 
     public ResponseEntity<Void> logout() {
-        // delete token if exists -> 200
-        // if doesn't exist give a 404
-        return null;
+        Token token = tokemnRepo.getToken(token);
+        if (token==None){
+            return new ResponseEntity(Response.400)
+
+        }
+        tokenRepo.deleteByToken(token);
+
     }
 }
