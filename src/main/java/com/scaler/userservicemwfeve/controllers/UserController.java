@@ -1,30 +1,54 @@
 package com.scaler.userservicemwfeve.controllers;
 
+import com.scaler.userservicemwfeve.dtos.LoginRequestDto;
+import com.scaler.userservicemwfeve.dtos.LogoutRequestDto;
+import com.scaler.userservicemwfeve.dtos.SignUpRequestDto;
+import com.scaler.userservicemwfeve.models.Token;
 import com.scaler.userservicemwfeve.models.User;
+import com.scaler.userservicemwfeve.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    public User login() {
+    private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/login")
+    public Token login(@RequestBody LoginRequestDto request) {
         // check if email and password in db
         // if yes return user
         // else throw some error
-        return null;
+        return userService.login(request.getEmail(), request.getPassword());
     }
 
-    public User signUp() {
+    @PostMapping("/signup")
+    public User signUp(@RequestBody SignUpRequestDto request) {
         // no need to hash password for now
         // just store user as is in the db
         // for now no need to have email verification either
-        return null;
+        String email = request.getEmail();
+        String password = request.getPassword();
+        String name = request.getName();;
+
+
+        return userService.signUp(name, email, password);
     }
 
-    public ResponseEntity<Void> logout() {
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto request) {
         // delete token if exists -> 200
         // if doesn't exist give a 404
-        return null;
+
+        userService.logout(request.getToken());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
