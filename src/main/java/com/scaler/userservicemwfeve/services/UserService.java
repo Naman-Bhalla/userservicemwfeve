@@ -67,6 +67,8 @@ public class UserService {
         token.setExpiryAt(expiryDate);
         token.setValue(RandomStringUtils.randomAlphanumeric(128));
 
+        // TODO 1: Change the above token to a JWT Token
+
         Token savedToken = tokenRepository.save(token);
 
         return savedToken;
@@ -87,5 +89,19 @@ public class UserService {
 
         return;
 
+    }
+
+    public User validateToken(String token) {
+        Optional<Token> tkn = tokenRepository.
+                findByValueAndDeletedEqualsAndExpiryAtGreaterThan(token, false, new Date());
+
+        if (tkn.isEmpty()) {
+            return null;
+        }
+
+        // TODO 2: Instead of validating via the DB, as the token is now a JWT
+        // token, validate using JWT
+
+        return tkn.get().getUser();
     }
 }
