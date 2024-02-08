@@ -11,9 +11,9 @@ public interface IUserService {
 
 //    User login();
 
-    Optional<User> login(User user) throws UserNotFoundException;
+    Token login(String email, String password) throws UserNotFoundException;
 
-    User signUp(User user);
+    User signUp(String name, String email, String password);
 
     void logOut(String value) throws TokenNotExistException;
 
