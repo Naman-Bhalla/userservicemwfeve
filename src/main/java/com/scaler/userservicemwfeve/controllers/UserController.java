@@ -3,6 +3,7 @@ package com.scaler.userservicemwfeve.controllers;
 import com.scaler.userservicemwfeve.dtos.LoginRequestDto;
 import com.scaler.userservicemwfeve.dtos.LogoutRequestDto;
 import com.scaler.userservicemwfeve.dtos.SignUpRequestDto;
+import com.scaler.userservicemwfeve.dtos.UserDto;
 import com.scaler.userservicemwfeve.models.Token;
 import com.scaler.userservicemwfeve.models.User;
 import com.scaler.userservicemwfeve.services.UserService;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public User signUp(@RequestBody SignUpRequestDto request) {
+    public UserDto signUp(@RequestBody SignUpRequestDto request) {
         // no need to hash password for now
         // just store user as is in the db
         // for now no need to have email verification either
@@ -38,7 +39,7 @@ public class UserController {
         String name = request.getName();;
 
 
-        return userService.signUp(name, email, password);
+        return UserDto.from(userService.signUp(name, email, password));
     }
 
     @PostMapping("/logout")
@@ -51,8 +52,8 @@ public class UserController {
     }
 
     @PostMapping("/validate/{token}")
-    public User validateToken(@PathVariable("token") @NonNull String token) {
-        return userService.validateToken(token);
+    public UserDto validateToken(@PathVariable("token") @NonNull String token) {
+        return UserDto.from(userService.validateToken(token));
     }
 }
 

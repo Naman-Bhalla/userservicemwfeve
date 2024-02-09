@@ -56,6 +56,16 @@ public class UserService {
             return null;
         }
 
+        Token token = getToken(user);
+
+        // TODO 1: Change the above token to a JWT Token
+
+        Token savedToken = tokenRepository.save(token);
+
+        return savedToken;
+    }
+
+    private static Token getToken(User user) {
         LocalDate today = LocalDate.now();
         LocalDate thirtyDaysLater = today.plus(30, ChronoUnit.DAYS);
 
@@ -66,12 +76,7 @@ public class UserService {
         token.setUser(user);
         token.setExpiryAt(expiryDate);
         token.setValue(RandomStringUtils.randomAlphanumeric(128));
-
-        // TODO 1: Change the above token to a JWT Token
-
-        Token savedToken = tokenRepository.save(token);
-
-        return savedToken;
+        return token;
     }
 
     public void logout(String token) {
