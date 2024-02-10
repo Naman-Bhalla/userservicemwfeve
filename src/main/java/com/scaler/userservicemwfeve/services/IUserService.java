@@ -17,4 +17,5 @@ public interface IUserService {
 
     void logOut(String value) throws TokenNotExistException;
 
+    User validateToken(String token) throws TokenNotExistException;
 }

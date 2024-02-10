@@ -63,6 +63,12 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/validate/{token}")
+    public ResponseEntity<User> validateToken(@PathVariable("token") String token) throws TokenNotExistException {
+
+        ResponseEntity<User> responseEntity = new ResponseEntity<>(userService.validateToken(token), HttpStatus.OK);
+        return responseEntity;
+    }
 
 }
 

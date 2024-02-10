@@ -1,5 +1,4 @@
 package com.scaler.userservicemwfeve.services;
-import com.scaler.userservicemwfeve.configs.BcryptConfiguration;
 import com.scaler.userservicemwfeve.exception.TokenNotExistException;
 import com.scaler.userservicemwfeve.exception.UserNotFoundException;
 import com.scaler.userservicemwfeve.models.Token;
@@ -92,9 +91,23 @@ public class UserService implements IUserService {
             throw new TokenNotExistException("invalid token");
         }
 
+
+
 //        Token token = optionalToken.get();
 //        token.setDeleted(true);
 //        tokenRepository.save(token);
+    }
+
+    @Override
+    public User validateToken(String token) throws TokenNotExistException {
+
+        Optional<Token> optionalToken =
+                tokenRepository.findByValueAndDeletedEqualsAndExpiryAtGreaterThan(token, false, new Date());
+
+        if(optionalToken.isEmpty()){
+            throw new TokenNotExistException("invalid login token");
+        }
+        return optionalToken.get().getUser();
     }
 }
 
