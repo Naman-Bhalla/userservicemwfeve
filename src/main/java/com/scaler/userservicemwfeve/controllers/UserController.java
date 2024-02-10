@@ -3,6 +3,7 @@ package com.scaler.userservicemwfeve.controllers;
 import com.scaler.userservicemwfeve.dtos.LoginRequestDto;
 import com.scaler.userservicemwfeve.dtos.LogoutRequestDto;
 import com.scaler.userservicemwfeve.dtos.SignUpRequestDto;
+import com.scaler.userservicemwfeve.dtos.UserDto;
 import com.scaler.userservicemwfeve.exception.TokenNotExistException;
 import com.scaler.userservicemwfeve.exception.UserNotFoundException;
 import com.scaler.userservicemwfeve.models.Token;
@@ -64,9 +65,9 @@ public class UserController {
     }
 
     @PostMapping("/validate/{token}")
-    public ResponseEntity<User> validateToken(@PathVariable("token") String token) throws TokenNotExistException {
+    public ResponseEntity<UserDto> validateToken(@PathVariable("token") String token) throws TokenNotExistException {
 
-        ResponseEntity<User> responseEntity = new ResponseEntity<>(userService.validateToken(token), HttpStatus.OK);
+        ResponseEntity<UserDto> responseEntity = new ResponseEntity<>(UserDto.from(userService.validateToken(token)), HttpStatus.OK);
         return responseEntity;
     }
 
