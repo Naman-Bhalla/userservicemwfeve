@@ -15,13 +15,13 @@ import java.util.UUID;
 
 @SpringBootTest
 class UserservicemwfeveApplicationTests {
-    @Autowired
-    private JpaRegisteredClientRepository registeredClientRepository;
+//    @Autowired
+//    private JpaRegisteredClientRepository registeredClientRepository;
 
     @Test
     void contextLoads() {
     }
-//        @Test
+//    @Test
 //    @Commit
 //    void storeRegisteredClientIntoDB() {
 //                RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -43,5 +43,6 @@ class UserservicemwfeveApplicationTests {
 //                registeredClientRepository.save(oidcClient);
 //
 //    }
+
 
 }
