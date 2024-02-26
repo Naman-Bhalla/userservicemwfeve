@@ -1,10 +1,14 @@
 package com.scaler.userservicemwfeve.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scaler.userservicemwfeve.dtos.SendEmailEventDto;
 import com.scaler.userservicemwfeve.models.Token;
 import com.scaler.userservicemwfeve.models.User;
 import com.scaler.userservicemwfeve.repositories.TokenRepository;
 import com.scaler.userservicemwfeve.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +24,19 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private TokenRepository tokenRepository;
 
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper objectMapper;
+
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       TokenRepository tokenRepository) {
+                       TokenRepository tokenRepositor,
+                       KafkaTemplate<String, String> kafkaTemplate,
+                       ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenRepository = tokenRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public User signUp(String fullName,
@@ -37,6 +48,24 @@ public class UserService {
         u.setHashedPassword(bCryptPasswordEncoder.encode(password));
 
         User user = userRepository.save(u);
+
+        SendEmailEventDto sendEmailEvent = new SendEmailEventDto();
+        sendEmailEvent.setTo(email);
+        sendEmailEvent.setFrom("info@scaler.com");
+        sendEmailEvent.setSubject("Welcome to Scaler");
+        sendEmailEvent.setBody(
+                "Thanks for signing up at Scaler." +
+                        "We are looking forward to you achieving a lot of success. Team Scaler"
+        );
+
+        try {
+            kafkaTemplate.send(
+                    "sendEmail",
+                    objectMapper.writeValueAsString(sendEmailEvent)
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         return user;
     }
